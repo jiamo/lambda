@@ -1,7 +1,6 @@
 open Angstrom
 open Printf
 
-
 type term =
   | Var of string
   | App of term * term
@@ -29,9 +28,6 @@ type lambda_line =
   | Blank
   | Let of string * term
   | Run of term
-
-(* Parsing functions would go here. Parsing in OCaml typically uses libraries like Menhir or Angstrom. *)
-
 
 let rec eval env = function
   | App (Var "quote", t) -> quote env t
@@ -100,7 +96,6 @@ and quote env term =
       | [a; b; c] -> a, b, c
       | _ -> failwith "Expected a list with three elements"in
     let f n g = Lam (a, Lam (b, Lam (c, g (Var (List.nth abc n))))) in
-  
     let rec aux = function
       | Var x ->
         (match List.assoc_opt x env with
@@ -111,13 +106,11 @@ and quote env term =
     in
     aux term
   
-
 let rec norm env term =
   match eval env term with
   | Var v -> Var v
   | Lam (v, m) -> Lam (v, norm env m)
   | App (m, n) -> App (norm env m, norm env n)
-
 
 let ws = skip_while (function ' ' | '\t' -> true | _ -> false)
 let str s = string s <* ws
@@ -146,7 +139,6 @@ let term_parser term =
   ]
 
 let term = fix term_parser
-
 let line_parser =
   print_endline "Starting parsing";
   let result = ws *> (option Blank (choice [
